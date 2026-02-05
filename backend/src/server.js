@@ -1,30 +1,24 @@
-import express from 'express'
-import { ENV } from './lib/env.js'
-import path from 'path'
+import express from "express";
+import cors from "cors";
+import dotenv from "dotenv";
 
-const app = express()
-const __dirname = path.resolve()
+dotenv.config();
 
-app.get('/', (req, res) => {
-  res.status(200).json({ msg: 'Success from API__' })
-})
+const app = express();
 
-app.get('/books', (req, res) => {
-  res.status(200).json({ msg: 'Success from BOOKS section' })
-})
+app.use(express.json());
 
-// bringing front end and backend code in the same url 5000 port for production purposeg
-if (ENV.IS_PRODUCTION === 'production') {
-  app.use(express.static(path.join(__dirname, '../frontend/dist')))
+app.use(cors({
+  origin: "https://doniv-123.onrender.com",
+  credentials: true
+}));
 
-  // SPA fallback — Express 5 safe
-  app.use('/{*any}',(req, res) => {
-    res.sendFile(
-      path.join(__dirname, '../frontend/dist/index.html')
-    )
-  })
-}
+app.get("/", (req, res) => {
+  res.status(200).json({ msg: "Success from API__" });
+});
 
-app.listen(ENV.PORT, () => {
-  console.log(`Server running on port ${ENV.PORT}`)
-})
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
