@@ -10,9 +10,12 @@ const app = express();
 app.use(express.json());
 
 app.use(cors({
-  origin: "https://doniv-123.onrender.com",
-  credentials: true
-}));
+  origin: [
+    "http://localhost:5173",
+    "https://doniv-123.onrender.com"
+  ]
+}))
+
 
 app.get("/", (req, res) => {
   res.status(200).json({ msg: "Success from API__" });

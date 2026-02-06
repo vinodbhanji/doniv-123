@@ -7,7 +7,7 @@ function App() {
   const [data, setData] = useState(null)
 
   useEffect(() => {
-    fetch(import.meta.env.VITE_API_URL)
+    fetch(import.meta.env.VITE_API_URL )
       .then(res => res.json())
       .then(data => {
         console.log("Backend Response:", data)
