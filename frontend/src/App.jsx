@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import './App.css'
+import { SignedIn, SignedOut, SignInButton, SignUpButton, UserButton } from '@clerk/clerk-react';
 
 function App() {
 
@@ -19,6 +20,14 @@ function App() {
     <>
       <h1>Frontend Connected Test</h1>
       <h2>{data ? data : "Loading from backend..."}</h2>
+      <SignedOut>
+        <SignInButton />
+        <SignUpButton />
+      </SignedOut>
+      
+      <SignedIn>
+        <UserButton />
+      </SignedIn>
     </>
   )
 }
