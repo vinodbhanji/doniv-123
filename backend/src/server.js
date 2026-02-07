@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import serve from "@inngest/express";
+import serve from "inngest/express";
 import { functions } from "./models/ingest.js";
 import {connDB} from './lib/db.js'
 import { inngest } from "../models/ingest.js";
