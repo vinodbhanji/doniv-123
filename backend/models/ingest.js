@@ -1,5 +1,4 @@
 import { Inngest } from "inngest";
-import { ENV } from "../lib/env.js";
 import User from "../models/User.js";
 import { connDB } from "../src/lib/db.js";
 
