@@ -6,9 +6,11 @@ export const inngest = new Inngest({ id: "my-app" });
 
 const createUser = inngest.createFunction(
   { id: "create-user" },
-  { event: "clerk/user.created"},
+  { event: "user.created"},
   async ({ event }) => {
     await connDB();
+    console.log("User event data:", event.data);
+
     const { id, email_addresses, first_name, last_name, image_url} = event.data;
     const nerUser={
         clerkID: id,
@@ -23,7 +25,7 @@ const createUser = inngest.createFunction(
 
 const deleteUser = inngest.createFunction(
   { id: "delete-user" },
-  { event: "clerk/user.deleted"},
+  { event: "user.deleted"},
   async ({ event }) => {
     await connDB();
     const { id } = event.data;

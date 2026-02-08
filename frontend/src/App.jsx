@@ -1,15 +1,16 @@
-import { useEffect, useState } from 'react'
-import { SignInButton, SignUpButton, UserButton, SignedIn, SignedOut } from '@clerk/clerk-react'
 
+
+import { useEffect, useState } from 'react';
+import { SignedIn, SignedOut, UserButton, SignInButton, SignUpButton, useUser } from '@clerk/clerk-react';
 
 function App() {
   const [data, setData] = useState(null);
+  const { user } = useUser ? useUser() : { user: null };
 
   useEffect(() => {
     fetch(import.meta.env.VITE_API_URL)
       .then(res => res.json())
       .then(data => {
-        console.log("Backend Response:", data);
         setData(data.msg);
       })
       .catch(err => console.error(err));
@@ -31,11 +32,18 @@ function App() {
         <section>
           <h2>{data ? data : "Loading from backend..."}</h2>
           <SignedOut>
-            <SignInButton mode='model'/>
-            <SignUpButton mode='model'/>
+            <SignInButton mode="modal">
+              <button>Sign In</button>
+            </SignInButton>
+            <SignUpButton mode="modal">
+              <button>Sign Up</button>
+            </SignUpButton>
           </SignedOut>
           <SignedIn>
-            <UserButton />
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+              <span>Welcome, {user?.firstName || user?.username || user?.emailAddresses?.[0]?.emailAddress || 'User'}!</span>
+              <UserButton afterSignOutUrl="/" />
+            </div>
           </SignedIn>
         </section>
       </main>
