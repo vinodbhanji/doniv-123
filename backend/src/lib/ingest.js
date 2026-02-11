@@ -1,6 +1,7 @@
 import { Inngest } from "inngest";
 import User from "../../models/User.js";
 import { connDB } from "./db.js";
+import { sendWelcomeEmail, sendDeleteEmail } from "./email.js";
 import { upsertStramUser, deleteStreamUser } from "./stream.js";
 
 export const inngest = new Inngest({ id: "my-app" });
@@ -21,7 +22,7 @@ const createUser = inngest.createFunction(
     }
     const user = new User(newUser);
     await user.save();
-
+    await sendWelcomeEmail(user.email, user.name);
     // adding in stram
     await upsertStramUser({
       id: newUser.clerkID.toString(),
@@ -40,7 +41,11 @@ const deleteUser = inngest.createFunction(
     const newUser={
       clerkID: id
     }
-    await User.findOneAndDelete(newUser); 
+    const user = await User.findOne(newUser); 
+    if(user){
+      await sendDeleteEmail(user.email, user.name);
+      await User.findOneAndDelete({ clerkID: id });
+    }
 
     // deleting user  in stream as well
     await deleteStreamUser(id.toString())

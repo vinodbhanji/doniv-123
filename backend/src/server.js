@@ -1,15 +1,17 @@
-
-import express from "express";
+import express, { Router } from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import { connDB } from "./lib/db.js";
 import { inngest, functions } from "./lib/ingest.js";
 import { serve } from "inngest/express";
+import { clerkMiddleware } from '@clerk/express'
+import authUser from "../middleware/authUser.js";
+import chatRouter from "../Router/chatRouter.js"; 
 
 dotenv.config();
 
 const app = express();
-
+app.use(clerkMiddleware()); //used for user authetication
 app.use(express.json());
 
 app.use(cors({
@@ -21,15 +23,17 @@ app.use(cors({
 }));
 
 app.use('/api/inngest', serve({ client: inngest, functions }));
+app.use('/api/chat', chatRouter)
 
 app.get("/", (req, res) => {
-  res.status(200).json({ msg: "Success from API__" });
+  res.status(200).json({ message: "Success from API__" });
 });
 
-// Clerk handles authentication and user management via webhooks and frontend
+// app.get('/call',authUser, async(req,res)=>{
+//   res.status(200).json({msg:'call endpoint'});
+// })
 
 const PORT = process.env.PORT || 5000;
-
 const startServer = async () => {
   try {
     await connDB();
