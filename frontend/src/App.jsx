@@ -1,5 +1,3 @@
-
-
 import { useEffect, useState } from 'react';
 import { SignedIn, SignedOut, UserButton, SignInButton, SignUpButton, useUser } from '@clerk/clerk-react';
 
