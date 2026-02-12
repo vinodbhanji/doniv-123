@@ -7,6 +7,7 @@ import { serve } from "inngest/express";
 import { clerkMiddleware } from '@clerk/express'
 import authUser from "../middleware/authUser.js";
 import chatRouter from "../Router/chatRouter.js"; 
+import sessionRouter from "../Router/sessionRoutes.js";
 
 dotenv.config();
 
@@ -24,6 +25,7 @@ app.use(cors({
 
 app.use('/api/inngest', serve({ client: inngest, functions }));
 app.use('/api/chat', chatRouter)
+app.use('/api/sessions', sessionRouter)
 
 app.get("/", (req, res) => {
   res.status(200).json({ message: "Success from API__" });
