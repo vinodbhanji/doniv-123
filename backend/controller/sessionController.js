@@ -91,9 +91,13 @@ export async function joinSession(req, res) {
         const clerkID = req.user.clerkID
 
         const session = await Session.findById(id);
+        
         if(!session) return res.status(500).json({message:"session does not exist"})
+        
         if(session.participant) return res.status(500).json({message:"session is full"})
-
+        
+        if(session.status !== 'active') return res.status(500).json({message:'Session already completed '})
+        
         if(session.host.toString() == userId.toString()) return res.status(400).json({message:'Host cannot join their own session'})
 
         session.participant = userId
@@ -121,18 +125,20 @@ export async function endSession(req, res) {
         if(session.host.toString() !== userId.toString()){
             return res.status(500).json({message:'Only host can end the session'})
         }
-        if(session.status == 'completed') return res.status(500).json({message:'Session already completed'})
-
-        session.status = 'completed'
-        await session.save()
-
+        if(session.status == 'completed'){
+            return res.status(500).json({message:'Session already completed'})
+        } 
+            
         // deleting video call
         const call = streamClient.video.call('default',session.callId)
         await call.delete({hard:true})
-
+            
         // deleting chat
         const channel = chatClient.channel('messaging', session.callId)
         await channel.delete();
+        
+        session.status = 'completed'
+        await session.save()
 
         res.status(500).json({message:'Session deleted succesfully'})
     }
